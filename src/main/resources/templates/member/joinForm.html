@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/default.css">
+<title>델리비 회원가입</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+function formCheck() {
+	
+//아이디 체크(4~20)
+	let member_id = $("#member_id"); //안해도되지만 편하게 변수만 부르기위해
+	if (member_id.val().length < 4 || member_id.val().length > 20) {
+	    alert("아이디 4~20");
+	    member_id.focus();
+		return false;
+	}				
+//패스워드 체크(4~20)
+	let password = $("#password");
+	if (password.val().length < 4 || password.val().length > 20) {
+		alert("패스워드 4~20");
+		password.focus();
+	    return false;
+	}		
+//이름 체크(trim()으로 공백, 띄워쓰기 거르기) 
+	let name = $("#name");
+	if (name.val().trim() == "") {
+	    alert("이름형식 잘못");
+	    name.focus();
+	    return false;
+	}		
+//성별 체크
+	let gender = $("input[name='gender']: checked"); //인풋태그에다 네임이 젠더에다 체크드인것을 선택
+	if (gender.length < 1) {  //체크안하면 0 체크하면 1 뜨니깐
+       	alert('성별을 선택해주세요.');
+        return false;
+    }
+
+//생년월일 체크(오늘 이전 날짜만 가능)
+	let birth = $("#birth");
+	let now = new Date();	//현재시간 가져오기(자바스크립트)
+	let inputDate = new Date(birth.val()); //사용자가 입력한 날짜
+	
+	if (birth.val() == "") {
+		alert("날짜선택")
+		birth.focus();
+		return false; //서브밋못하게
+	}
+	if(now < inputDate) { //미래 선택할때
+		alert("날짜가이상함")
+		birth.focus();
+		return false;
+	}
+	
+	if (confirm("가입하시겠습니까?")) {
+        return true; // 폼을 제출합니다.
+    } else {
+        return false; // 폼 제출을 취소합니다.
+    }
+	
+}
+</script>
+</head>
+<body>
+	<div id="container">
+		<div class="header">
+       		<a href="/" class="bee-image">
+            	<img src="/image/bee2.jpg" class="home-image" alt="메인 페이지로 이동">
+        	</a>
+    	</div>
+		<input type="button" onclick="location.href='/'" value="메인으로">     <!-- ture가 리턴되오면 폼제출 false면 폼제출 중단  -->
+		<form action="join" method="POST" th:object="${member}" onsubmit = "return formCheck()">   <!-- action=어디로url을 보낼건지 , method=요청방식(안쓰면 get), form태그는 대부분 post로 안그러면 url에 정보가 다 남음-->			
+			<!-- <div th:if="${errMsg}" th:text="${errMsg}" class="error">effMsg가 발생했으면 text의 errMsg를 출력해라</div> -->
+			<div th:if="${#fields.hasGlobalErrors()}"> 	<!-- #:기본제공해주는것들쓸수잇다 -->
+				<p th:each="err : ${#fields.globalErrors}" th:text="${err}" class="error">
+			</div>
+			<table>
+				<tr>
+					<th>아이디</th>
+					<td>    
+					  <input type="text" th:field="*{member_id}"> <!-- *th:field : id,name 속성값을 필드이름으로 만들어줌, id는 내가 직접쓴게 우선, name은 타임리프가 우선됨 -->
+					  <div th:errors="*{member_id}" class="error">id유효성검사</div>
+					</td>
+				</tr>                                             
+				<tr>
+					<th>비밀번호</th>
+					<td>
+						<input type="password" th:field="*{password}">
+						<div th:errors="*{password}" class="error"></div>
+					</td>
+				</tr>			
+				<tr>
+					<th>이름</th>
+					<td>
+						<input type="text" th:field="*{name}">
+						<div th:errors="*{name}" class="error"></div>
+					</td>
+				</tr>	
+				<tr>
+					<th>성별</th>
+					<td>
+						<th:block th:each="gender : ${T(com.example.deliciousBee.model.member.GenderType).values()}"> 	
+							<label th:for ="${#ids.next('gender')}" th:text="${gender.description}"></label> <!-- ids: 1 2 3 숫자붙혀줌, 글자건들여도 선택되게함  -->
+							<input type="radio" th:field="*{gender}" th:value="${gender}">				
+							<!--[[${gender.description}]]: getDescription을 불러옴 그럼 글자 남성 여성을 차례로 반복
+							 젠터타입이늄에서 메일과 피메일 뽑아서 gender에넣어줌  그리고 그젠더를 input태그의 gender에넣어줌
+							* 왜이러느냐? 오타 방지--> 									
+						</th:block>	
+						<!-- 밑에처럼해도되지만 위에 -->								
+						<!-- <label for="gender1">남성</label>
+						<input type="radio" th:field="*{gender}" value="MALE"> MALE을 날려보낸다 
+						<label for="gender2">여성</label>      radio라서 자바가 알아서 id값이 중복안되게 1 2 붙혀줌 
+						<input type="radio" th:field="*{gender}" value="FEMALE"> -->
+						<div th:errors="*{gender}" class="error"></div>
+					</td>
+				</tr>			
+				<tr>
+					<th>생년월일</th>
+					<td>
+						<input type="date" th:field="*{birth}">
+						<div th:errors="*{birth}" class="error"></div>
+					</td>
+				</tr>	
+				<tr>
+					<th>이메일</th> <!--type="Email"하면 @형식검사해줌  -->
+					<td><input type="text" th:field="*{email}"></td>
+				</tr>		
+			</table>
+			<p>
+			<div class="center">
+				<input type="submit" value="가입하기" onclick="confirm()">  <!-- post방식 join으로 보내기 -->
+				<input type="reset" value="다시작성"> <!--  폼태그안 리셋 -->
+			</div>
+		</form>
+	
+	</div>
+</body>
+</html>

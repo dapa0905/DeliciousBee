@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/default.css">
+<title>로그인 페이지</title>
+
+</head>
+<body>
+	<div class="header">
+        <a href="/" class="bee-image">
+            <img src="/image/bee.jpg" class="home-image" alt="메인 페이지로 이동">
+        </a>
+ 	</div>
+<div class="login-main">
+<form action="#" method="POST" th:object="${loginForm}">
+		<div th:if="${#fields.hasGlobalErrors()}">  <!-- reject터진애들 담아라 -->
+			<p th:each="err : ${#fields.globalErrors()}" th:text="${err}" class="error">  <!--reject가 동시에 터질수도있어서  -->
+		</div>
+		<table>
+			<tr>
+				<th>아이디</th>
+				<td>
+					<input type="text" th:field="*{member_id}"> 
+					<div th:errors="*{member_id}" th:errorClass="error">th:errorClass=에러가터지면 클래스속성 추가해라</div>
+				</td>
+			</tr>
+			<tr>
+				<th>비밀번호</th>
+				<td>
+					<input type="password" th:field="*{password}">
+					<div th:errors="*{password}" th:errorClass="error"></div>
+				</td>
+			</tr>
+		</table>
+		<p>
+		<div class="loginButton">
+			<input type="submit" value="로그인">
+		</div>	
+		<div>
+			<input type="button" onclick="location.href='/member/join'" value="회원가입">
+		</div>
+	</form>
+	</div>
+</body>
+</html>
