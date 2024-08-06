@@ -1,7 +1,7 @@
 package com.example.deliciousBee.service;
 
 
-import com.example.deliciousBee.model.review.Restaurant;
+import com.example.deliciousBee.model.board.Restaurant;
 import com.example.deliciousBee.model.review.Review;
 import com.example.deliciousBee.repository.RestaurantRepository;
 

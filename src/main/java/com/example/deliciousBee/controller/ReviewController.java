@@ -25,13 +25,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.deliciousBee.model.board.Restaurant;
+import com.example.deliciousBee.model.member.BeeMember;
 import com.example.deliciousBee.model.review.AttachedFile;
 import com.example.deliciousBee.model.review.Review;
 import com.example.deliciousBee.model.review.ReviewConverter;
 import com.example.deliciousBee.model.review.ReviewLikeForm;
 import com.example.deliciousBee.model.review.ReviewWriteForm;
+import com.example.deliciousBee.service.BeeMemberService;
+import com.example.deliciousBee.service.RestaurantService;
 import com.example.deliciousBee.service.ReviewService;
 import com.example.deliciousBee.util.FileService;
 
@@ -47,31 +52,53 @@ public class ReviewController {
 	private String uploadPath = "C:\\upload\\";
 	private final ReviewService reviewService;
 	private final FileService fileService;
+	private final BeeMemberService beeMemberService;
+	private final RestaurantService restaurantService;
 
-	@GetMapping("allreview")
-	public String allReview(Model model) {
-		List<Review> allReview = reviewService.getAllReviewWithFiles();
+	@GetMapping("allreview/{restaurant_id}")
+	public String allReview(@PathVariable("restaurant_id") Long restaurant_id, Model model) {
+		List<Review> allReview = reviewService.getReviewsByRestaurantIdWithFiles(restaurant_id);
+		Restaurant restaurant = restaurantService.findRestaurant(restaurant_id);
+		model.addAttribute("restaurant", restaurant);
 		model.addAttribute("allReview", allReview);
 		model.addAttribute("uploadPath", uploadPath);
 		return "review/allreview";
 	}
 
-	@GetMapping("write")
-	public String writeReview(Model model) {
+	@GetMapping("write/{restaurant_id}")
+	public String writeReview(@PathVariable("restaurant_id") Long restaurant_id
+			,Model model) {
 		model.addAttribute("writeform", new ReviewWriteForm());
+		model.addAttribute("restaurant_id", restaurant_id);
 		return "review/write";
 	}
 
-	@PostMapping("write")
-	public String postWriteReview(@Validated @ModelAttribute("writeForm") ReviewWriteForm reviewWriteForm,
-			BindingResult result, @RequestParam(name = "file", required = false) MultipartFile file) {
+	@PostMapping("write/{restaurant_id}")
+	public String postWriteReview(@Validated @ModelAttribute("writeForm") ReviewWriteForm reviewWriteForm
+			,BindingResult result
+			,@RequestParam(name = "file", required = false) MultipartFile file
+			,@SessionAttribute(name="loginMember") BeeMember loginMember
+			,@PathVariable(name = "restaurant_id") Long restaurant_id
+			) {
 
 		if (result.hasErrors()) {
 			return "redirect:/";
 		}
+		
+		if (loginMember == null) {
+		    return "redirect:/login";
+		}
 
-		// ReviewWriteForm -> Review 변환작업
 		Review review = ReviewConverter.reviewWriteFormToReview(reviewWriteForm);
+		review.setBeeMember(loginMember);
+		review.setUserName(loginMember.getName());
+		
+		Restaurant restaurant = restaurantService.findRestaurant(restaurant_id);
+		review.setRestaurant(restaurant);
+		
+		log.info("** restaurant_id:{}", restaurant_id);
+		log.info("** restaurant:{}", restaurant);
+		
 		// 파일 유호성 체크 및 저장
 		if (!file.isEmpty()) {
 			AttachedFile attachedFile = fileService.saveFile(file);
@@ -80,8 +107,7 @@ public class ReviewController {
 			return "redirect:/";
 		}
 		reviewService.saveReview(review, null);
-		log.info("review:{}", review);
-		return "redirect:/";
+		return "redirect:/review/allreview/" + restaurant_id;
 
 	}
 

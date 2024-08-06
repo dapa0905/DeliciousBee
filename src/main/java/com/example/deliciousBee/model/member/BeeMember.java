@@ -1,49 +1,49 @@
 package com.example.deliciousBee.model.member;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
+
+import com.example.deliciousBee.model.review.Review;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-	//@Pattern: 정규식 사용
-	//@Max: 최댓값 지정
-	//@Min: 최솟값 지정
-	//Vaild: 해당 Object의 Vaildation을 실행
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity //JPA가 관리
-@Getter @Setter @ToString
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BeeMember {
 	
-	@Id  //JPA꺼
-	@Column(length = 20) // vachar 20으로 만들어달라 JPA꺼
-	private String member_id;    //아이디
+	@Id  
+	@Column(length = 20)
+	private String member_id;    
 	
-	@Column(length = 20, nullable = false) // 꼭 적어야된다
-	private String password;     //패스워드
+	@Column(length = 20, nullable = false) 
+	private String password;    
 	
 	@Column(length = 50, nullable = false)
-	private String name;         //이름
+	private String name;         
 	
 	@Column(length = 10)
-	@Enumerated(EnumType.STRING)     //
-	private GenderType gender;       //성별 이늄으로
+	@Enumerated(EnumType.STRING)    
+	private GenderType gender;       
 	
-	private LocalDate birth;        //생년월일
+	@Column(name = "birth")
+	private LocalDate birth;       
 	
 	@Column(length = 100)
-	private String email;        //이메일
+	private String email;      
 	
-	
+	@OneToMany(mappedBy = "beeMember")
+	private List<Review> review;
 	
 }

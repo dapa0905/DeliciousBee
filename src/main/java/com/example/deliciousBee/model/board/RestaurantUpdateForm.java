@@ -1,4 +1,4 @@
-package com.example.deliciousBee.model.review;
+package com.example.deliciousBee.model.board;
 
 import jakarta.persistence.Column;
 import lombok.Getter;

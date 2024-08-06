@@ -6,7 +6,6 @@ public class ReviewConverter {
 
 	public static Review reviewWriteFormToReview(ReviewWriteForm writeForm) {
 		Review review = new Review();
-		review.setUserName(writeForm.getUserName());
 		review.setReviewContents(writeForm.getReviewContents());
 		review.setRating(writeForm.getRating());
 		review.setRecommendItems(writeForm.getRecommendItems());

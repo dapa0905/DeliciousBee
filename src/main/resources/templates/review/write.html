@@ -11,12 +11,8 @@
   <div class="container">
     <h1 class="mt-5">리뷰 작성하기</h1>
     
-    <form action="write" method="POST" th:object="${writeForm}" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="userName">사용자 이름</label>
-        <input type="text" class="form-control" id="userName" name="userName" required>
-      </div>
-      <div class="form-group">
+    <form th:action="@{/review/write/{restaurant_id}(restaurant_id=${restaurant_id})}" method="POST" th:object="${writeForm}" enctype="multipart/form-data">
+      <div class="form-group">	
         <label for="reviewContents">리뷰 내용</label>
         <textarea class="form-control" id="reviewContents" name="reviewContents" rows="4" required></textarea>
       </div>
@@ -36,9 +32,10 @@
         <label for="file">리뷰 사진 업로드</label>
         <input type="file" class="form-control-file" id="file" name="file">
       </div>
+      <input type="hidden" name="restaurant_id" th:value="${restaurant_id}">
       <button type="submit" class="btn btn-primary">리뷰 작성 완료</button>
     </form>
-    
+    <input type="hidden" name="restaurant_id" th:value="${restaurant_id}">
   </div>
 </body>
 </html>

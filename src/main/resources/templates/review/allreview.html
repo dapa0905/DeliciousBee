@@ -57,7 +57,7 @@
         <h1 class="mt-5">전체 리뷰</h1>
       </div>
       <div class="col-12 text-right mb-3">
-        <a th:href="@{/review/write}" class="btn btn-success">리뷰 작성하기</a>
+        <a th:href="@{/review/write/{restaurant_id}(restaurant_id=${restaurant.id})}" class="btn btn-success">리뷰 작성하기</a>
         <a class="btn btn-secondary  ml-2" th:href="@{/review/sort(category_name=${category_name}, orderby=id)}">최신순</a>
         <a class="btn btn-secondary  ml-2" th:href="@{/review/sort(category_name=${category_name}, orderby=likeCount)}">좋아요 많은순</a>
       </div>
@@ -65,7 +65,7 @@
     
     <div class="card mt-3" th:each="review : ${allReview}">
       <div class="card-body">
-        <h5 class="card-title" th:text="${review.userName}"></h5>
+        <h5 class="card-title" th:text="${review.beeMember.name}"></h5>
         <p class="card-text" th:text="${review.reviewContents}"></p>
         <div class="rating" data-review-id="[[${review.id}]]">
           <div class="stars" th:attr="data-rating=${review.rating}"></div>
@@ -92,7 +92,7 @@
     <br>
     <div class="row">
       <div class="col-12 text-right mb-3">
-        <a th:href="@{/review/write}" class="btn btn-success">리뷰 작성하기</a>
+        <a th:href="@{/review/write/{restaurant_id}(restaurant_id=${restaurant.id})}" class="btn btn-success">리뷰 작성하기</a>
       </div>
     </div>
   </div>

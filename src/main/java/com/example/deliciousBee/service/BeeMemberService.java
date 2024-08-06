@@ -27,8 +27,8 @@ public class BeeMemberService {
 	
 	}
 
-	public BeeMember findMemberById(String member_id) {
-		Optional<BeeMember> member =  beeMemberRepository.findById(member_id);
+	public BeeMember findMemberById(String string) {
+		Optional<BeeMember> member =  beeMemberRepository.findById(string);
 		return member.orElse(null); //찾았는데 없으면 null 찾았는데 있으면 그 id값 리턴
 	} 
 	

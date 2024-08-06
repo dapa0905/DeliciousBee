@@ -1,7 +1,7 @@
 package com.example.deliciousBee.controller;
 
 
-import com.example.deliciousBee.model.review.Restaurant;
+import com.example.deliciousBee.model.board.Restaurant;
 import com.example.deliciousBee.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;

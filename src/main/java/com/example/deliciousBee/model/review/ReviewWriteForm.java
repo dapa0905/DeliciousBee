@@ -10,9 +10,7 @@ import lombok.Data;
 @Data
 public class ReviewWriteForm {
 	
-	@NotBlank
-	private String userName;
-	
+
 	@NotBlank
 	private String reviewContents;
 	

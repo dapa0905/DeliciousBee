@@ -34,8 +34,8 @@ public class ReviewService {
 		}
 	}
 	
-	public List<Review> getAllReviewWithFiles() {
-		List<Review> reviews = reviewRepository.findAll();
+	public List<Review> getReviewsByRestaurantIdWithFiles(Long restaurantId) {
+		List<Review> reviews = reviewRepository.findByRestaurantId(restaurantId);
 		for (Review review : reviews) {
 			List<AttachedFile> files = fileRepository.findByReviewId(review.getId());
 			review.setAttachedFile(files);
